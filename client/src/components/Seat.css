@@ -1,0 +1,148 @@
+/* Seat.css */
+
+.app {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.controls {
+  margin-bottom: 20px;
+}
+
+.controls input,
+.controls button {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.controls button {
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  background-color: #45a049;
+}
+
+.message {
+  margin: 20px;
+  font-size: 18px;
+  color: #28a745;
+}
+
+.seat-map {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  max-width: 360px;
+  margin-left: 450px;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px;
+  transition: background-color 0.3s;
+}
+
+.seat.available {
+  background-color: #90ee90;
+}
+
+.seat.booked {
+  background-color: #ffcccb;
+  cursor: not-allowed;
+}
+
+.seat.vacant {
+  background-color: #f0e68c;
+}
+
+.seat:hover:not(.booked) {
+  background-color: #32cd32;
+}
+
+/* New Styles for Compartment Layout */
+.seat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.left-side {
+  display: flex;
+  gap: 20px;
+}
+
+.right-side {
+  display: flex;
+  gap: 10px;
+}
+
+.passage {
+  width: 20px;
+}
+
+.popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border: 2px solid #4caf50;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.popup h2 {
+  margin-top: 0;
+  color: #4caf50;
+}
+
+.popup p {
+  font-size: 16px;
+}
+
+.popup button {
+  padding: 10px 20px;
+  margin-top: 10px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup button:hover {
+  background-color: #45a049;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
