@@ -47,7 +47,7 @@ h1 {
   justify-content: center;
   margin-top: 20px;
   max-width: 360px;
-  margin-left: 450px;
+  margin-left: 410px;
 }
 
 .seat {
@@ -59,7 +59,6 @@ h1 {
   border: 1px solid #ccc;
   border-radius: 5px;
   cursor: pointer;
-  padding: 10px;
   transition: background-color 0.3s;
 }
 
@@ -89,7 +88,7 @@ h1 {
 
 .left-side {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .right-side {
@@ -103,7 +102,7 @@ h1 {
 
 .popup {
   position: fixed;
-  top: 20%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
@@ -113,7 +112,6 @@ h1 {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
-
 .popup h2 {
   margin-top: 0;
   color: #4caf50;
@@ -125,6 +123,7 @@ h1 {
 
 .popup button {
   padding: 10px 20px;
+  position: relative;
   margin-top: 10px;
   border: none;
   background-color: #4caf50;
@@ -145,4 +144,20 @@ h1 {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+
+/* Additional CSS for "Tap here to see booked seats" button */
+
+.message button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.message button:hover {
+  background-color: #45a049;
 }
