@@ -63,7 +63,7 @@ router.post('/reserve', async (req, res) => {
     const { username, numSeats } = req.body;
 
     if (numSeats < 1 || numSeats > 7) {
-        return res.status(400).json({ error: 'yOU ' });
+        return res.status(400).json({ error: 'Invalid number of seats requested' });
     }
 
     const user = await User.findOneAndUpdate(
@@ -76,26 +76,67 @@ router.post('/reserve', async (req, res) => {
     session.startTransaction();
 
     try {
-        const availableSeats = await Seat.find({ status: 'available' }).session(session);
-        if (availableSeats.length < numSeats) {
-            await session.abortTransaction();
-            session.endSession();
-            return res.status(400).json({ error: 'Not enough seats available' });
-        }
-
+        const existingReservations = await Seat.find({ reservedBy: user.username }).session(session);
         let reservedSeats = [];
-        for (let i = 0; i < availableSeats.length; i++) {
-            const seat = availableSeats[i];
-            const row = Math.floor((seat.number - 1) / 7);
-            const rowSeats = availableSeats.slice(i, i + numSeats);
-            if (rowSeats.length === numSeats && rowSeats.every(s => Math.floor((s.number - 1) / 7) === row)) {
-                reservedSeats = rowSeats;
-                break;
+
+        if (existingReservations.length > 0) {
+            const existingRows = new Set(existingReservations.map(seat => Math.floor((seat.number - 1) / 7)));
+            const availableSeats = await Seat.find({ status: 'available' }).session(session);
+
+            // Check for seats in the same row or nearby rows
+            for (let i = 0; i < availableSeats.length; i++) {
+                const seat = availableSeats[i];
+                const row = Math.floor((seat.number - 1) / 7);
+
+                if (existingRows.has(row)) {
+                    const rowSeats = availableSeats.slice(i, i + numSeats);
+                    if (rowSeats.length === numSeats && rowSeats.every(s => Math.floor((s.number - 1) / 7) === row)) {
+                        reservedSeats = rowSeats;
+                        break;
+                    }
+                }
+            }
+
+            // If no seats found in the same row, try to find in nearby rows
+            if (reservedSeats.length === 0) {
+                const nearbyRows = Array.from(existingRows).flatMap(row => [row - 1, row, row + 1]);
+                for (let i = 0; i < availableSeats.length; i++) {
+                    const seat = availableSeats[i];
+                    const row = Math.floor((seat.number - 1) / 7);
+
+                    if (nearbyRows.includes(row)) {
+                        const rowSeats = availableSeats.slice(i, i + numSeats);
+                        if (rowSeats.length === numSeats && rowSeats.every(s => Math.floor((s.number - 1) / 7) === row)) {
+                            reservedSeats = rowSeats;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
+        // If no suitable seats found or no existing bookings, proceed with normal booking
         if (reservedSeats.length === 0) {
-            reservedSeats = availableSeats.slice(0, numSeats);
+            const availableSeats = await Seat.find({ status: 'available' }).session(session);
+            if (availableSeats.length < numSeats) {
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ error: 'Not enough seats available' });
+            }
+
+            for (let i = 0; i < availableSeats.length; i++) {
+                const seat = availableSeats[i];
+                const row = Math.floor((seat.number - 1) / 7);
+                const rowSeats = availableSeats.slice(i, i + numSeats);
+                if (rowSeats.length === numSeats && rowSeats.every(s => Math.floor((s.number - 1) / 7) === row)) {
+                    reservedSeats = rowSeats;
+                    break;
+                }
+            }
+
+            if (reservedSeats.length === 0) {
+                reservedSeats = availableSeats.slice(0, numSeats);
+            }
         }
 
         await Seat.updateMany(
