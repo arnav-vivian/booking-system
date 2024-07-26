@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Seat.css';
 
 const Seat = () => {
@@ -8,7 +10,9 @@ const Seat = () => {
     const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
     const [bookedSeats, setBookedSeats] = useState([]);
+    const [recentlyBookedSeats, setRecentlyBookedSeats] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
+    const [inputsDisabled, setInputsDisabled] = useState(false);
 
     useEffect(() => {
         const fetchSeats = async () => {
@@ -20,6 +24,17 @@ const Seat = () => {
 
     const handleReserve = async () => {
         try {
+            if (username === "") {
+                toast.error('Please enter a username to book seats');
+                return;
+            }
+
+            // Disable inputs for 5 seconds
+            setInputsDisabled(true);
+            setTimeout(() => {
+                setInputsDisabled(false);
+            }, 6500);
+
             const response = await axios.post('/api/seats/reserve', { username, numSeats });
             const reservedSeats = response.data;
             setSeats(prevSeats =>
@@ -30,9 +45,32 @@ const Seat = () => {
                 )
             );
             setBookedSeats(reservedSeats.map(seat => seat.number));
-            setMessage(`Successfully reserved ${numSeats} seats for ${username}`);
+            setRecentlyBookedSeats(reservedSeats.map(seat => seat.number));
+            setMessage(`Successfully reserved ${numSeats} seat(s) for ${username}`);
+            toast.success('Booking Successful 🏆');
+
+            // Clear highlight after 5 seconds
+            setTimeout(() => {
+                setRecentlyBookedSeats([]);
+            }, 6500);
+
+            // Reset the message after 5 seconds
+            setTimeout(() => {
+                setMessage('');
+            }, 6500);
         } catch (error) {
             setMessage(error.response?.data?.error || 'An error occurred');
+            toast.error(error.response?.data?.error || 'An error occurred');
+
+            // Reset the message after 5 seconds
+            setTimeout(() => {
+                setMessage('');
+            }, 6500);
+
+            // Re-enable inputs in case of an error
+            setTimeout(() => {
+                setInputsDisabled(false);
+            }, 6500);
         }
     };
 
@@ -54,6 +92,7 @@ const Seat = () => {
                     placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    disabled={inputsDisabled}
                 />
                 <input
                     type="number"
@@ -62,19 +101,27 @@ const Seat = () => {
                     onChange={(e) => setNumSeats(parseInt(e.target.value))}
                     min="1"
                     max="7"
+                    disabled={inputsDisabled}
                 />
-                <button onClick={handleReserve}>Reserve</button>
+                <button
+                    onClick={handleReserve}
+                    disabled={inputsDisabled}
+                    className={inputsDisabled ? 'disabled' : ''}
+                >
+                    Reserve
+                </button>
             </div>
             {message && (
                 <p className="message">
-                    {message} <button onClick={seatsBooked}>Booked seats</button>
+                    Successfully reserved <span className="bold">{numSeats}</span> seat(s) for <span className="bold">{username}</span>.
+                    <button onClick={seatsBooked}>Booked Seats</button>
                 </p>
             )}
             <div className="seat-map">
                 {seats.map(seat => (
                     <div
                         key={seat.number}
-                        className={`seat ${seat.status}`}
+                        className={`seat ${seat.status} ${recentlyBookedSeats.includes(seat.number) ? 'highlight' : ''}`}
                         title={`Seat ${seat.number}`}
                     >
                         {seat.number}
@@ -90,6 +137,7 @@ const Seat = () => {
                     </div>
                 </div>
             )}
+            <ToastContainer position="top-center" />
         </div>
     );
 };

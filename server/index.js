@@ -16,7 +16,7 @@ const dbURI = 'mongodb+srv://admin:admin@cluster0.503m5xc.mongodb.net/train_seat
 mongoose.connect(dbURI, {
     //useNewUrlParser: true,
     //useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 50000
+    serverSelectionTimeoutMS: 500000
 })
     .then(() => console.log('Connected to MongoDB '))
     .catch(err => console.error('Error connecting to MongoDB Atlas:', err));

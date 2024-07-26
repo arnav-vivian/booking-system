@@ -47,7 +47,7 @@ h1 {
   justify-content: center;
   margin-top: 20px;
   max-width: 360px;
-  margin-left: 410px;
+  margin-left: 430px;
 }
 
 .seat {
@@ -69,10 +69,6 @@ h1 {
 .seat.booked {
   background-color: #ffcccb;
   cursor: not-allowed;
-}
-
-.seat.vacant {
-  background-color: #f0e68c;
 }
 
 .seat:hover:not(.booked) {
@@ -160,4 +156,12 @@ h1 {
 
 .message button:hover {
   background-color: #45a049;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+button.disabled {
+  cursor: not-allowed;
 }
