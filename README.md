@@ -84,7 +84,13 @@ The Seat Reservation System is a web-based application that allows users to rese
 ## Screenshots
 
 ### Main Screen
+![Popup](screenshots/popup.png)
 
+### Popup with Booked Seats
+![Popup](screenshots/popup.png)
+
+### Main Screen
+![Popup](screenshots/popup.png)
 
 ### Popup with Booked Seats
 ![Popup](screenshots/popup.png)
