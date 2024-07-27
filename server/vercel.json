@@ -6,7 +6,6 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "routes": [
     {
       "src": "/(.*)",
@@ -14,7 +13,6 @@
     }
   ],
   "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "PORT": "3000"
+    "MONGODB_URI": "@mongodb_uri"
   }
 }
