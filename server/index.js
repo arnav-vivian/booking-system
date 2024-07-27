@@ -1,28 +1,30 @@
-
-const cors = require('cors');
 const express = require('express');
-const router = express.Router();
-const mongoose = require('mongoose');  // Import mongoose
-
+const cors = require('cors');
+const mongoose = require('mongoose');
+const seatRoutes = require('./routes/Seats'); // Adjust the path if needed
 
 const app = express();
+
+// Middleware
 app.use(express.json());
 app.use(cors());
-const seatRoutes = require('./routes/Seats');
 
-// Replace with your MongoDB Atlas connection string
+// MongoDB Connection
 const dbURI = 'mongodb+srv://admin:admin@cluster0.503m5xc.mongodb.net/train_seats?retryWrites=true&w=majority';
 
 mongoose.connect(dbURI, {
-    //useNewUrlParser: true,
-    //useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 500000
 })
-    .then(() => console.log('Connected to MongoDB '))
+    .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Error connecting to MongoDB Atlas:', err));
 
+// Routes
 app.use('/api/seats', seatRoutes);
 
-app.listen(3001, () => {
-    console.log('----------------Server is running on port 3001----------');
+// Dynamic port assignment for Vercel
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });
