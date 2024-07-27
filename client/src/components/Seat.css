@@ -1,5 +1,10 @@
 /* Seat.css */
-
+/* html,
+body {
+  margin: 10px;
+  height: 100%;
+  overflow: hidden;
+} */
 .app {
   font-family: Arial, sans-serif;
   text-align: center;
@@ -64,11 +69,14 @@ h1 {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
+  max-height: 500px;
   justify-content: center;
   margin-top: 20px;
-  max-width: 360px;
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .seat {
