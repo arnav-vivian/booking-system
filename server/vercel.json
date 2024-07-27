@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "routes/**/*.js",
+      "src": "server/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/routes/seats/(.*)",
-      "dest": "/routes/seats.js"
+      "src": "/api/seats(.*)",
+      "dest": "/server/routes/seats.js"
     }
   ],
   "env": {
