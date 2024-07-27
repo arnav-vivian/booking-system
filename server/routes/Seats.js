@@ -264,7 +264,14 @@ router.get('/', async (req, res) => {
     res.json(seats);
 });
 
-//fill partial no of seats
+// Helper function to swap elements in an array
+const swap = (array, index1, index2) => {
+    const temp = array[index1];
+    array[index1] = array[index2];
+    array[index2] = temp;
+};
+
+// API to fill partial number of seats
 router.post('/partialfilling', async (req, res) => {
     const { username, numSeats } = req.body;
     const session = await mongoose.startSession();
@@ -273,7 +280,7 @@ router.post('/partialfilling', async (req, res) => {
     try {
         // Check if there are enough available seats
         const totalSeatsAvailable = await Seat.countDocuments({ status: 'available' }).session(session);
-        if (totalSeatsAvailable == 0) {
+        if (totalSeatsAvailable === 0) {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({ error: 'No more Seats are vacant!' });
@@ -285,23 +292,23 @@ router.post('/partialfilling', async (req, res) => {
         }
 
         // Retrieve available seats
-        const kahliSeats = await Seat.find({ status: 'available' }).session(session);
+        const availableSeats = await Seat.find({ status: 'available' }).session(session);
 
         // Shuffle the available seats to randomly select
-        for (let i = kahliSeats.length - 1; i > 0; i--) {
-            //generating a random no from 1 to i
+        for (let i = availableSeats.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            swap(kahliSeats, i, j);
+            swap(availableSeats, i, j);
         }
 
         // Select the first `numSeats` seats from the shuffled list
-        const seatsToBook = kahliSeats.slice(0, numSeats);
+        const seatsToBook = availableSeats.slice(0, numSeats);
 
         // Update the status of the selected seats
         await Seat.updateMany(
             { number: { $in: seatsToBook.map(s => s.number) } },
             { $set: { status: 'booked', reservedBy: username } },
-        ).session(session);
+            { session }
+        );
 
         await session.commitTransaction();
         session.endSession();
@@ -312,8 +319,6 @@ router.post('/partialfilling', async (req, res) => {
         res.status(500).json({ error: 'An error occurred' });
     }
 });
-
-
 
 // Fill all seats
 router.post('/fill', async (req, res) => {
