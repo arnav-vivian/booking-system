@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const seatRoutes = require('./routes/Seats'); // Adjust the path if needed
 
+require('dotenv').config();
 const app = express();
 
 // Middleware
@@ -10,8 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // MongoDB Connection
-const dbURI = 'mongodb+srv://admin:admin@cluster0.503m5xc.mongodb.net/train_seats?retryWrites=true&w=majority';
-
+const dbURI = process.env.MONGODB_URI;
 mongoose.connect(dbURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
