@@ -18,8 +18,7 @@ const Seat = () => {
 
     useEffect(() => {
         const fetchSeats = async () => {
-            const response = await axios.get('/api/seats');
-            console.log("/api/seats successfull")
+            const response = await axios.get('https://unstop-booking-11.onrender.com/api/seats');
             setSeats(response.data);
         };
         fetchSeats();
@@ -39,7 +38,7 @@ const Seat = () => {
             }, 6500);
 
             // Make the API request to reserve seats
-            const response = await axios.post('/api/seats/reserve', { username, numSeats });
+            const response = await axios.post('https://unstop-booking-11.onrender.com/api/seats/reserve', { username, numSeats });
             const reservedSeats = response.data;
 
             if (response.status !== 200 || reservedSeats.length === 0) {
