@@ -19,6 +19,7 @@ const Seat = () => {
     useEffect(() => {
         const fetchSeats = async () => {
             const response = await axios.get('/api/seats');
+            console.log("/api/seats successfull")
             setSeats(response.data);
         };
         fetchSeats();
